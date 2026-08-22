@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#151515">
+<title>Brasa — Gerenciador de Churrasco</title>
+<style>
+:root{
+  --bg:#101112;--panel:#181a1b;--panel2:#202223;--line:#343638;
+  --text:#f7f4ee;--muted:#aaa8a3;--orange:#ff7a22;--red:#ef3d2f;
+  --green:#54c84c;--blue:#3287ed;--pink:#e94d9a;--yellow:#ffc62e;
+  --shadow:0 14px 40px #0007;--radius:22px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 50% -10%,#402016 0,#101112 35%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{width:min(100%,1050px);margin:auto;padding-bottom:70px}
+.hero{min-height:250px;padding:30px 24px 24px;display:flex;align-items:flex-end;position:relative;overflow:hidden;border-bottom:1px solid #ffffff12}
+.hero:before{content:"";position:absolute;inset:0;background:
+linear-gradient(90deg,#111 0%,#111c 42%,#1110),
+url("https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=1200&q=82") center/cover}
+.hero>*{position:relative;z-index:1}
+.brand{max-width:650px}
+.logo{font-size:clamp(34px,6vw,58px);line-height:.95;font-weight:900;letter-spacing:-2px}
+.logo span{color:var(--orange)}
+.subtitle{margin:14px 0 0;color:#ddd;font-size:clamp(15px,2.2vw,19px);max-width:480px}
+main{padding:18px}
+.card{background:linear-gradient(145deg,#1d1f20,#151617);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin-bottom:16px}
+h2{font-size:22px;margin:0 0 16px;letter-spacing:-.4px}
+.section-title{display:flex;gap:10px;align-items:center}
+.people-grid{display:grid;grid-template-columns:repeat(3,1fr) 1fr;gap:10px}
+.person{background:#111416;border:1px solid #303235;border-radius:18px;padding:14px;text-align:center}
+.person .label{font-weight:800;font-size:14px;margin-bottom:5px}
+.person .num{font-size:32px;font-weight:900;margin:4px 0 10px}
+.person.male .label{color:#57a3ff}.person.female .label{color:#f45ca5}.person.child .label{color:#62d25b}.total{border-color:#8a5b26}.total .label,.total .num{color:#ff9b3f}
+.controls{display:flex;justify-content:center;gap:8px}
+.round{width:42px;height:42px;border-radius:50%;border:1px solid #ffffff20;background:#25282a;color:white;font-size:23px;font-weight:800}
+.round:hover{filter:brightness(1.2)}
+.male .round{background:#123f78}.female .round{background:#6b214c}.child .round{background:#236c2d}
+.help{color:var(--muted);font-size:13px;text-align:center;margin:16px 0 0}
+.menus{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.menu{overflow:hidden;border:1px solid #363839;background:#111315;border-radius:18px;transition:.2s}
+.menu.selected{border-color:var(--green);box-shadow:0 0 0 2px #54c84c33}
+.menu img{width:100%;height:150px;object-fit:cover;display:block}
+.menu-body{padding:14px}
+.badge{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#f4f2e8;color:#222;font-weight:900;position:absolute;margin:10px}
+.menu h3{margin:0 0 5px;font-size:17px}.menu p{margin:0;color:var(--muted);font-size:13px;min-height:34px}
+.primary,.secondary{border:0;border-radius:11px;padding:12px 14px;width:100%;font-weight:850;margin-top:13px}
+.primary{background:var(--green);color:#081408}.secondary{background:transparent;color:#ddd;border:1px solid #4b4d4f}
+.tip{padding:12px 14px;border-radius:12px;background:#351815;border:1px solid #6d2a20;color:#ff8069;text-align:center;font-size:13px;margin-top:14px}
+.results{display:none}.results.show{display:block}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:15px}
+.stat{padding:13px;border-radius:15px;background:#111315;border:1px solid #303234}.stat small{color:var(--muted);display:block}.stat strong{font-size:22px;display:block;margin-top:3px}
+.shopping{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{display:flex;align-items:center;gap:10px;background:#111315;border:1px solid #303234;padding:12px;border-radius:13px}
+.item input{accent-color:var(--green);width:18px;height:18px}.item.done{opacity:.5;text-decoration:line-through}
+.recipe-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.recipe{overflow:hidden;border:1px solid #343637;border-radius:18px;background:#111315}
+.recipe img{width:100%;height:145px;object-fit:cover}.recipe-body{padding:14px}.recipe h3{margin:0 0 7px}.recipe p{margin:0;color:#bbb;font-size:13px;line-height:1.45}
+.recipe details{margin-top:10px;color:#ddd;font-size:13px}.recipe summary{cursor:pointer;font-weight:800}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed #444;border-radius:16px}
+
+.category-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.cat-tab{flex:0 0 auto;border:1px solid #3c3f40;background:#111315;color:#ccc;border-radius:999px;padding:10px 14px;font-weight:800}
+.cat-tab.active{background:var(--green);border-color:var(--green);color:#091009}
+.suggestions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.suggestion{background:#111315;border:1px solid #343637;border-radius:17px;overflow:hidden}
+.suggestion img{width:100%;height:125px;object-fit:cover;display:block}
+.suggestion-body{padding:12px}
+.suggestion h3{font-size:15px;margin:0 0 5px}
+.suggestion p{font-size:12.5px;line-height:1.4;color:#aaa;margin:0}
+.suggestion .tag{display:inline-block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.4px;color:#111;background:#ffb14a;padding:4px 7px;border-radius:999px;margin-bottom:7px}
+@media(max-width:760px){.suggestions-grid{grid-template-columns:1fr 1fr}.suggestion img{height:145px}}
+@media(max-width:430px){.suggestions-grid{grid-template-columns:1fr}.suggestion img{height:180px}}
+.footer{text-align:center;color:#aaa;font-size:13px;padding:10px 20px}.footer b{color:var(--green)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,120px);background:#f3f1e9;color:#161616;padding:12px 18px;border-radius:999px;font-weight:800;box-shadow:var(--shadow);transition:.25s;z-index:5}.toast.show{transform:translate(-50%,0)}
+@media(max-width:760px){
+  .people-grid{grid-template-columns:repeat(3,1fr)}
+  .total{grid-column:1/-1}
+  .menus,.recipe-grid{grid-template-columns:1fr}
+  .menu img{height:190px}.recipe img{height:190px}
+  .shopping{grid-template-columns:1fr}
+  .summary{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:430px){
+  main{padding:10px}.card{padding:15px;border-radius:18px}
+  .people-grid{gap:7px}.person{padding:10px 5px}.person .num{font-size:27px}
+  .round{width:38px;height:38px}
+  .hero{min-height:230px;padding:20px 17px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+  <div class="brand">
+    <div class="logo">🔥 Gerenciador de <span>Churrasco</span></div>
+    <p class="subtitle">Planeje a quantidade, escolha o cardápio e saia com a lista de compras pronta.</p>
+  </div>
+</header>
+
+<main>
+<section class="card">
+  <h2 class="section-title">👥 Quantas pessoas vão ao churrasco?</h2>
+  <div class="people-grid">
+    <div class="person male">
+      <div class="label">👨 Homens</div><div class="num" id="men">0</div>
+      <div class="controls"><button class="round" data-type="men" data-delta="-1">−</button><button class="round" data-type="men" data-delta="1">+</button></div>
+    </div>
+    <div class="person female">
+      <div class="label">👩 Mulheres</div><div class="num" id="women">0</div>
+      <div class="controls"><button class="round" data-type="women" data-delta="-1">−</button><button class="round" data-type="women" data-delta="1">+</button></div>
+    </div>
+    <div class="person child">
+      <div class="label">🧒 Crianças</div><div class="num" id="children">0</div>
+      <div class="controls"><button class="round" data-type="children" data-delta="-1">−</button><button class="round" data-type="children" data-delta="1">+</button></div>
+    </div>
+    <div class="person total"><div class="label">👥 Total</div><div class="num" id="total">0</div><small>pessoas</small></div>
+  </div>
+  <p class="help">As quantidades usam médias para um churrasco brasileiro de aproximadamente 4 horas.</p>
+</section>
+
+<section class="card">
+  <h2 class="section-title">⭐ Sugestões de cardápio</h2>
+  <div class="menus" id="menus"></div>
+  <div class="tip" id="tip">💡 Informe as pessoas e selecione um cardápio para gerar a lista.</div>
+</section>
+
+<section class="card results" id="results">
+  <h2 class="section-title">🛒 Lista de compras</h2>
+  <div class="summary" id="summary"></div>
+  <div class="shopping" id="shopping"></div>
+</section>
+
+<section class="card">
+  <h2 class="section-title">🍢 Sugestões para incrementar o churrasco</h2>
+  <p class="help" style="text-align:left;margin-top:-8px;margin-bottom:16px">
+    Escolha ideias para montar uma mesa mais completa. Os itens abaixo são sugestões e podem ser combinados com qualquer cardápio.
+  </p>
+
+  <div class="category-tabs" id="categoryTabs">
+    <button class="cat-tab active" data-category="aperitivos">🍢 Aperitivos</button>
+    <button class="cat-tab" data-category="carnes">🥩 Pratos principais</button>
+    <button class="cat-tab" data-category="acompanhamentos">🥗 Acompanhamentos</button>
+  </div>
+
+  <div class="suggestions-grid" id="suggestionsGrid"></div>
+</section>
+
+<section class="card">
+  <h2 class="section-title">📖 Receitas & inspirações</h2>
+  <div class="recipe-grid">
+    <article class="recipe">
+      <img src="https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=800&q=80" alt="Carne assada">
+      <div class="recipe-body"><h3>🥩 Picanha na brasa</h3><p>Tempere com sal grosso. Comece com a gordura virada para cima e finalize perto da brasa forte.</p><details><summary>Ver receita</summary><p>Sal grosso, picanha e brasa bem quente. Sele os dois lados, afaste do fogo e termine até o ponto desejado. Descanse 5 minutos antes de fatiar.</p></details></div>
+    </article>
+    <article class="recipe">
+      <img src="https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=800&q=80" alt="Salada">
+      <div class="recipe-body"><h3>🥗 Vinagrete simples</h3><p>Tomate, cebola, pimentão, cheiro-verde, sal, azeite e vinagre.</p><details><summary>Ver receita</summary><p>Pique tudo pequeno, misture os ingredientes, ajuste o sal e deixe descansar na geladeira por 30 minutos.</p></details></div>
+    </article>
+    <article class="recipe">
+      <img src="https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=800&q=80" alt="Pão de alho">
+      <div class="recipe-body"><h3>🧄 Pão de alho</h3><p>Manteiga, alho, salsinha e pão. Leve à brasa até dourar.</p><details><summary>Ver receita</summary><p>Misture manteiga amolecida, alho e salsinha. Passe no pão, embrulhe levemente em papel-alumínio e doure na grelha.</p></details></div>
+    </article>
+  </div>
+</section>
+
+<div class="footer">❤️ Planeje, compre e aproveite cada momento. <b>Churrasco é mais que comida, é união! 🔥</b></div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const state={men:0,women:0,children:0,menu:null};
+const suggestions={
+ aperitivos:[
+  {name:'Pão de alho',desc:'Clássico da grelha, ótimo para começar enquanto as carnes assam.',img:'https://images.unsplash.com/photo-1573140401552-3fab0b24306f?auto=format&fit=crop&w=700&q=80'},
+  {name:'Queijo coalho',desc:'Doure na grelha e sirva com orégano ou melaço de cana.',img:'https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&w=700&q=80'},
+  {name:'Coração de frango',desc:'Marinado com alho, sal e limão, servido bem douradinho.',img:'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=700&q=80'},
+  {name:'Linguiça artesanal',desc:'Fina ou toscana, excelente como aperitivo antes das carnes principais.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'},
+  {name:'Espetinho de legumes',desc:'Abobrinha, cebola, tomate-cereja e pimentão com queijo.',img:'https://images.unsplash.com/photo-1535221191545-9d7a4e8c2d75?auto=format&fit=crop&w=700&q=80'},
+  {name:'Batatinhas temperadas',desc:'Batata bolinha com ervas e azeite, servida quente ou em conserva.',img:'https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=700&q=80'},
+  {name:'Azeitonas e ovos de codorna',desc:'Petisco frio e prático para deixar na mesa desde a chegada.',img:'https://images.unsplash.com/photo-1505253716362-afaea1d3d1af?auto=format&fit=crop&w=700&q=80'},
+  {name:'Mandioca na brasa',desc:'Cozinhe antes e finalize na grelha com manteiga e sal.',img:'https://images.unsplash.com/photo-1623595111209-1b5c6b0b8e39?auto=format&fit=crop&w=700&q=80'}
+ ],
+ carnes:[
+  {name:'Picanha',desc:'A estrela do churrasco: sal grosso, brasa forte e ponto suculento.',img:'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=700&q=80'},
+  {name:'Alcatra',desc:'Corte macio e versátil, excelente para bifes grossos ou espetos.',img:'https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=700&q=80'},
+  {name:'Fraldinha',desc:'Saborosa e macia quando fatiada contra as fibras.',img:'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=700&q=80'},
+  {name:'Maminha',desc:'Corte suculento, ótimo inteiro na grelha ou em fatias grossas.',img:'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=700&q=80'},
+  {name:'Contrafilé',desc:'Bifes altos com gordura lateral para dourar e manter suculência.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'},
+  {name:'Costela bovina',desc:'Para churrascos longos: fogo baixo, tempo e muita paciência.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'},
+  {name:'Costelinha suína',desc:'Fica ótima com marinada agridoce e finalização na brasa.',img:'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=700&q=80'},
+  {name:'Pancetta',desc:'Barriga suína com pele crocante e interior macio.',img:'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=700&q=80'},
+  {name:'Medalhão de lombo',desc:'Lombo suíno envolto em bacon para ganhar sabor e suculência.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'},
+  {name:'Coxinha da asa',desc:'Asinhas marinadas, douradas e crocantes na churrasqueira.',img:'https://images.unsplash.com/photo-1527477396000-e27163b481c2?auto=format&fit=crop&w=700&q=80'},
+  {name:'Sobrecoxa desossada',desc:'Fica suculenta na brasa e aceita várias marinadas.',img:'https://images.unsplash.com/photo-1532550907401-a500c9a57435?auto=format&fit=crop&w=700&q=80'},
+  {name:'Cupim na brasa',desc:'Corte brasileiro cheio de sabor, ideal para preparo lento.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'},
+  {name:'Bife ancho',desc:'Corte alto e marmorizado para quem gosta de carne bem suculenta.',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=700&q=80'}
+ ],
+ acompanhamentos:[
+  {name:'Arroz branco',desc:'Simples e soltinho para acompanhar carnes e farofa.',img:'https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=700&q=80'},
+  {name:'Arroz biro-biro',desc:'Arroz com bacon, ovos, batata palha e cheiro-verde.',img:'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=700&q=80'},
+  {name:'Vinagrete',desc:'Tomate, cebola, pimentão, cheiro-verde, azeite e vinagre.',img:'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=700&q=80'},
+  {name:'Maionese de batata',desc:'Batatas, cenoura, ervilha e maionese cremosa.',img:'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=700&q=80'},
+  {name:'Farofa de bacon',desc:'Farinha de mandioca dourada com bacon e cebola.',img:'https://images.unsplash.com/photo-1601050690117-94f5f6fa8bd7?auto=format&fit=crop&w=700&q=80'},
+  {name:'Pão francês',desc:'Para acompanhar a carne, fazer sanduíches ou servir com vinagrete.',img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=700&q=80'},
+  {name:'Salada verde',desc:'Folhas, tomate, palmito e molho leve para equilibrar a mesa.',img:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=700&q=80'},
+  {name:'Mandioca cozida',desc:'Acompanhamento brasileiro que combina muito bem com carnes.',img:'https://images.unsplash.com/photo-1592924357228-91a4daadcfea?auto=format&fit=crop&w=700&q=80'}
+ ]};
+
+function renderSuggestions(category='aperitivos'){
+ document.querySelectorAll('.cat-tab').forEach(b=>b.classList.toggle('active',b.dataset.category===category));
+ const labels={aperitivos:'Aperitivo',carnes:'Principal',acompanhamentos:'Acompanhamento'};
+ document.getElementById('suggestionsGrid').innerHTML=suggestions[category].map(x=>`
+  <article class="suggestion">
+   <img src="${x.img}" alt="${x.name}" loading="lazy">
+   <div class="suggestion-body"><span class="tag">${labels[category]}</span><h3>${x.name}</h3><p>${x.desc}</p></div>
+  </article>`).join('');
+}
+document.addEventListener('click',e=>{
+ const tab=e.target.closest('.cat-tab');
+ if(tab) renderSuggestions(tab.dataset.category);
+});
+renderSuggestions();
+
+const menus=[
+ {id:'classic',title:'Tradicional Completo',desc:'Arroz, carne e pão',img:'https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=900&q=82'},
+ {id:'light',title:'Leve e Saboroso',desc:'Pão, salada e carne',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82'},
+ {id:'complete',title:'Completo com Acompanhamentos',desc:'Arroz, farofa, vinagrete e carne',img:'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=900&q=82'}
+];
+
+const $=s=>document.querySelector(s);
+function totalPeople(){return state.men+state.women+state.children}
+function renderPeople(){
+ ['men','women','children'].forEach(k=>$('#'+k).textContent=state[k]);
+ $('#total').textContent=totalPeople();
+ updateResults();
+}
+function renderMenus(){
+ $('#menus').innerHTML=menus.map((m,i)=>`
+ <article class="menu ${state.menu===m.id?'selected':''}">
+   <div style="position:relative"><span class="badge">${i+1}</span><img src="${m.img}" alt="${m.title}"></div>
+   <div class="menu-body"><h3>${m.title}</h3><p>${m.desc}</p>
+   <button class="primary" onclick="selectMenu('${m.id}')">${state.menu===m.id?'Selecionado ✓':'Selecionar ✓'}</button></div>
+ </article>`).join('');
+}
+function selectMenu(id){
+ if(!totalPeople()){toast('Adicione pelo menos 1 pessoa primeiro.');return}
+ state.menu=id;renderMenus();updateResults();
+ $('#results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function kg(v){return v>=1?`${v.toFixed(1).replace('.',',')} kg`:`${Math.round(v*1000)} g`}
+function item(name,qty,unit=''){
+ return {name,qty:Math.ceil(qty*10)/10,display:unit==='kg'?kg(qty):unit==='un'?`${Math.ceil(qty)} un.`:`${Math.ceil(qty*10)/10} ${unit}`};
+}
+function calculate(){
+ const m=state.men,w=state.women,c=state.children;
+ // consumo médio: homem 500g carne, mulher 350g, criança 220g
+ const meat=.50*m+.35*w+.22*c;
+ const people=totalPeople();
+ const data={meat};
+ if(state.menu==='classic'){
+   data.items=[
+    item('Carnes variadas',meat,'kg'),item('Arroz',.08*people,'kg'),item('Pão de alho',.35*people,'un'),
+    item('Farofa',.045*people,'kg'),item('Sal grosso',.012*people,'kg'),item('Carvão',.55*people,'kg'),
+    item('Refrigerante / suco',.55*people,'L'),item('Gelo',.35*people,'kg')
+   ];
+ } else if(state.menu==='light'){
+   data.items=[
+    item('Carnes variadas',meat,'kg'),item('Pão de alho',.45*people,'un'),item('Salada / vinagrete',.14*people,'kg'),
+    item('Farofa',.04*people,'kg'),item('Sal grosso',.012*people,'kg'),item('Carvão',.55*people,'kg'),
+    item('Refrigerante / suco',.55*people,'L'),item('Gelo',.35*people,'kg')
+   ];
+ } else {
+   data.items=[
+    item('Carnes variadas',meat,'kg'),item('Arroz',.08*people,'kg'),item('Farofa',.05*people,'kg'),
+    item('Vinagrete',.12*people,'kg'),item('Pão de alho',.35*people,'un'),item('Sal grosso',.012*people,'kg'),
+    item('Carvão',.55*people,'kg'),item('Refrigerante / suco',.55*people,'L'),item('Gelo',.35*people,'kg')
+   ];
+ }
+ return data;
+}
+function updateResults(){
+ const box=$('#results');
+ if(!state.menu||!totalPeople()){box.classList.remove('show');return}
+ const d=calculate(), p=totalPeople();
+ box.classList.add('show');
+ $('#summary').innerHTML=`
+ <div class="stat"><small>Pessoas</small><strong>${p}</strong></div>
+ <div class="stat"><small>Carne total</small><strong>${kg(d.meat)}</strong></div>
+ <div class="stat"><small>Carvão</small><strong>${kg(.55*p)}</strong></div>
+ <div class="stat"><small>Bebidas</small><strong>${(.55*p).toFixed(1).replace('.',',')} L</strong></div>`;
+ $('#shopping').innerHTML=d.items.map((x,i)=>`
+  <label class="item" id="it${i}"><input type="checkbox" onchange="this.parentElement.classList.toggle('done',this.checked)"><span><b>${x.name}</b><br><small>${x.display}</small></span></label>`).join('');
+ $('#tip').textContent=`🔥 Para ${p} ${p===1?'pessoa':'pessoas'}, esta é uma estimativa confortável. Ajuste conforme o apetite da sua turma.`;
+}
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>el.classList.remove('show'),2200)}
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-type]');if(!b)return;
+ const k=b.dataset.type;state[k]=Math.max(0,state[k]+Number(b.dataset.delta));renderPeople();
+});
+renderMenus();renderPeople();
+</script>
+</body>
+</html>
